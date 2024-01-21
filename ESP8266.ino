@@ -4,8 +4,8 @@
 #include <ESP8266WiFi.h>
 #include <espnow.h>
 
-uint8_t newMacAddress[] = { 0x96, 0x3B, 0xC7, 0x34, 0x69, 0x02 };
-uint8_t receiverAddress[] = { 0x94, 0x3C, 0xC6, 0x33, 0x68, 0x01 };
+uint8_t newMacAddress[] = {0x96, 0x3B, 0xC7, 0x34, 0x69, 0x02};
+uint8_t receiverAddress[] = {0x94, 0x3C, 0xC6, 0x33, 0x68, 0x01};
 
 // esp_now_peer_info_t peerInfo;
 
@@ -17,25 +17,44 @@ uint8_t receiverAddress[] = { 0x94, 0x3C, 0xC6, 0x33, 0x68, 0x01 };
 //   }
 // }
 
-void onoff(uint8_t* macAddr, uint8_t* incomingData, uint8_t len) {
-  if (incomingData[0] == 'E') {
+void onoff(uint8_t *macAddr, uint8_t *incomingData, uint8_t len)
+{
+  if (incomingData[0] == 'E')
+  {
     digitalWrite(RELAISPIN, HIGH);
   }
-  if (incomingData[0] == 'A') {
+  if (incomingData[0] == 'A')
+  {
     digitalWrite(RELAISPIN, LOW);
   }
 }
+void sendPotiValue(int value)
+{
+  // Split value to two bytes
+  u8 data[] = {(value >> 8) & 0xFF, value & 0xFF};
 
-void setup() {
+  // Serial.print("Send poti value: ");
+  // Serial.print(data[0], HEX);
+  // Serial.println(data[1], HEX);
+
+  // // Send data to Esp32 device
+  esp_now_send(receiverAddress, data, 2);
+}
+
+void setup()
+{
   pinMode(RELAISPIN, OUTPUT);
   pinMode(LED_BUILTIN, OUTPUT);
   WiFi.mode(WIFI_STA);
   wifi_set_macaddr(STATION_IF, newMacAddress);
   WiFi.disconnect();
 
-  if (esp_now_init() != 0) {
+  if (esp_now_init() != 0)
+  {
     digitalWrite(LED_BUILTIN, HIGH);
-  } else {
+  }
+  else
+  {
     digitalWrite(LED_BUILTIN, LOW);
   }
 
@@ -52,9 +71,24 @@ void setup() {
   esp_now_register_recv_cb(onoff);
 }
 
-void loop() {
-  uint8_t potiwert = analogRead(POTI) / 5;
-  // char mess[] = "Hello";
-  esp_now_send(receiverAddress, (uint8_t*)&potiwert, sizeof(potiwert));
-  delay(200);
+void loop()
+{
+  // delay is necessary for receiving data
+  delay(100);
+  // ############################################ READING POTI ######################################################
+  {
+    // TODO: Smooth out values
+
+    // Saving previously read values
+    static int prevPotiValue = 0;
+    // Read value from Poti
+    int potiValue = analogRead(POTI_PIN);
+    if (potiValue != prevPotiValue)
+    {
+      prevPotiValue = potiValue;
+
+      // Send value to ESP32
+      sendPotiValue(potiValue);
+    }
+  }
 }
