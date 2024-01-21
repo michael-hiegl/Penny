@@ -120,7 +120,7 @@ void matrixLoop()
         else
         {
           // Pin are not the same
-          printMessage("Pin stimmt nicht überein", TFT_RED);
+          printMessage("Pin stimmt nicht ueberein", TFT_RED);
         }
         checkChangePin = "";
 
