@@ -489,6 +489,8 @@ void setup()
 
   // Initialize communication for keypad
   Wire.begin(21, 22);
+
+  TFT_Init();
 }
 
 void loop()
