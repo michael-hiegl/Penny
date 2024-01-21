@@ -82,7 +82,7 @@ void loop()
     // Saving previously read values
     static int prevPotiValue = 0;
     // Read value from Poti
-    int potiValue = analogRead(POTI_PIN);
+    int potiValue = analogRead(POTI);
     if (potiValue != prevPotiValue)
     {
       prevPotiValue = potiValue;
