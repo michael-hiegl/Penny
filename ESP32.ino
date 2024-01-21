@@ -83,7 +83,7 @@ void matrixLoop()
   {
     // Reset pin
     inputPin = "";
-    tft.updatePin(inputPin);
+    updatePin(inputPin);
 
     return;
   }
@@ -94,16 +94,16 @@ void matrixLoop()
       if (inputPin == masterPin || inputPin == getPin())
       {
         sendRelayOpen(true);
-        tft.printMessage("Relay geoeffnet", TFT_GREEN);
+        printMessage("Relay geoeffnet", TFT_GREEN);
       }
       else if (inputPin == "")
       {
         sendRelayOpen(false);
-        tft.printMessage("Relay geschlossen", TFT_BLACK);
+        printMessage("Relay geschlossen", TFT_BLACK);
       }
       else
       {
-        tft.printMessage("Falscher Pin", TFT_RED);
+        printMessage("Falscher Pin", TFT_RED);
       }
     }
     else
@@ -115,12 +115,12 @@ void matrixLoop()
         if (checkChangePin == inputPin)
         {
           setPin(inputPin); // save user pin to flash
-          tft.printMessage("Pin erfolgreich geaendert", TFT_GREEN);
+          printMessage("Pin erfolgreich geaendert", TFT_GREEN);
         }
         else
         {
           // Pin are not the same
-          tft.printMessage("Pin stimmt nicht überein", TFT_RED);
+          printMessage("Pin stimmt nicht überein", TFT_RED);
         }
         checkChangePin = "";
 
@@ -129,14 +129,14 @@ void matrixLoop()
       }
       else
       {
-        tft.printMessage("Pin erneut eingeben", TFT_BLACK);
+        printMessage("Pin erneut eingeben", TFT_BLACK);
         checkChangePin = inputPin;
       }
     }
 
     // Reset pin
     inputPin = "";
-    tft.updatePin(inputPin);
+    updatePin(inputPin);
 
     return;
   }
@@ -145,7 +145,7 @@ void matrixLoop()
     if (pressedKey == 'B')
     {
       inChangePin = true;
-      tft.printMessage("Neuen Code eingeben", TFT_BLACK);
+      printMessage("Neuen Code eingeben", TFT_BLACK);
     }
 
     return;
@@ -156,9 +156,9 @@ void matrixLoop()
 
   inputPin += pressedKey;
   Serial.println(inputPin);
-  tft.updatePin(inputPin);
+  updatePin(inputPin);
   if (!inChangePin)
-    tft.printMessage("", TFT_WHITE); // Message löschen
+    printMessage("", TFT_WHITE); // Message löschen
 }
 
 void setPin(String pin)
@@ -497,7 +497,7 @@ void loop()
   if (currentValue != potiwert)
   {
     currentValue = potiwert;
-    tft.DisplayValue(potiwert);
+    DisplayValue(potiwert);
   }
 
   matrixLoop();
